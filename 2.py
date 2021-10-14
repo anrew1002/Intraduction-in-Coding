@@ -45,7 +45,7 @@ def delit(n):
 #print('2',delit(1184),delit(1210))
 for i in range(1,100000):
     delFirst=delit(i)
-    if delit(delFirst)==i and not(i==delFirst):
+    if delit(delFirst)==i and not(i>=delFirst) :
         print(i,delFirst)
 
 
