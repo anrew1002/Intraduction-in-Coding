@@ -17,7 +17,11 @@ def Calc(a,b,c):
             result=a-c
             return result
         elif b=='/':
-            result=a/c
+            try:
+                result=a/c
+            except ZeroDivisionError:
+                print("Не дели на ноль.")
+                return "Error"
             return result
         elif b=='*':
             result=a*c
