@@ -4,19 +4,18 @@
 #определенным DDD и hh и mm (секунды возьмите за 0) и временем его создания.
 import random
 from datetime import datetime
-for i in range(1, 365+1):
+for day in range(1, 365+1):
     hh=random.randint(0, 24)
     mm=random.randint(0, 60)
-    i=str(i)+'_'+str(hh)+'_'+str(mm)
+    naming=str(day)+'_'+str(hh)+'_'+str(mm)
     file_name = 'data_{}.txt' .format(i)
+    PC_Time=datetime.now()
+    #today=[PC_Time.day, PC_time.month, PC_Time.year]
+    d, ms, y = PC_Time.day,PC_time.month,PC_Time.year
     #вычисляем сегодняшний порядковый день
-    a=datetime.now()
-    today=[a.day, a.month, a.year]
-    d, ms, y = today
-    #вычисляем сегодняшний порядковый день
-    h=a.hour
-    m=a.minute
-    b=i.split('_')
+    h=naming.hour
+    m=naming.minute
+    b=file_name.split('_')
     #print('часы ', h)
     #print('часы рандомные ',hh)
     #print('минуты ', m)
