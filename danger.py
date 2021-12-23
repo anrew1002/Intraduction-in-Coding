@@ -1,3 +1,5 @@
+#Cчитает сумму пока она не станет 0
+
 sum1=0
 while True:
     while True:
