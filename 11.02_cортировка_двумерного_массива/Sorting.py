@@ -3,13 +3,9 @@ def my_sort(a):
     for i in range(len(a)):
         min_ind=i
         for j in range(i,len(a)):
-            
-            
             if a[j] < a[min_ind]:
-                min_ind=j
-                
+                min_ind=j    
         a[min_ind],a[i]=a[i],a[min_ind]
-        
     return a
 
 mas_to_sort=[]
