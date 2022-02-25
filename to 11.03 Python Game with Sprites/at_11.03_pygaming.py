@@ -6,6 +6,7 @@ K_RIGHT,
 K_ESCAPE,
 KEYDOWN,
 QUIT,)
+import random
 
 def playerInit():
     global playerSprite
@@ -16,28 +17,48 @@ def playerInit():
 SCREEN_WIDTH=600
 SCREEN_HEIGHT=600
 FPS=60
-
-class myplayer(pg.sprite.Sprite):
-    SCREEN_WIDTH=600
-    SCREEN_HEIGHT=600
+enemySpeed=5
+class MyPlayer(pg.sprite.Sprite):
     def __init__(self,x,filename):
         pg.sprite.Sprite.__init__(self)
         self.image=pg.image.load(filename).convert_alpha()
         self.rect=self.image.get_rect(center=(x,200))
     def update(self,keys):
-        if self.rect.y < SCREEN_HEIGHT:
-            if keys[K_UP]:
-                self.rect.move_ip(0,-5)
-            if keys[K_DOWN]:
-                self.rect.move_ip(0, 5)
-        if self.rect.x < SCREEN_WIDTH:
-            if keys[K_LEFT]:
-                self.rect.move_ip(-5, 0)
-            if keys[K_RIGHT]:
-                self.rect.move_ip(5, 0)
+        if keys[K_UP]:
+            self.rect.move_ip(0,-5)
+        if keys[K_DOWN]:
+            self.rect.move_ip(0, 5)
+        if keys[K_LEFT]:
+            self.rect.move_ip(-5, 0)
+        if keys[K_RIGHT]:
+            self.rect.move_ip(5, 0)
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        if self.rect.bottom >= SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+            
+class Enemy(pg.sprite.Sprite):
+    def __init__(self,y,filename):
+        pg.sprite.Sprite.__init__(self)
+        self.image=pg.image.load(filename).convert_alpha()
+        self.rect=self.image.get_rect(center=(700,y))
+    def update(self):    
+        self.rect.move_ip(-enemySpeed,0)
+        if self.rect.right<0:
+            self.rect=self.image.get_rect(center=(random.randint(SCREEN_WIDTH+20,SCREEN_WIDTH+100),
+                                                 random.randint(0,SCREEN_HEIGHT)))
+            
+        
+            
+
+
+
 
     
-
 pg.init()
 screen=pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pg.display.set_caption("My Game")
@@ -45,7 +66,8 @@ clock=pg.time.Clock()
 
 screen.fill((185,177,219))
 
-player1=myplayer(300,"player.png")
+player1=MyPlayer(300,"player.png")
+enemy1=Enemy(random.randint(0,SCREEN_HEIGHT),"enemy1.png")
 
 running = True
 while running:
@@ -57,16 +79,19 @@ while running:
             running=False
         
     screen.fill((185,177,219))
-    screen.blit(player1.image,player1.rect)      
+    screen.blit(player1.image,player1.rect)
+    screen.blit(enemy1.image,enemy1.rect)
             
     pg.display.flip()
 
     keys=pg.key.get_pressed()
     player1.update(keys)
+    enemy1.update()
+    if pg.sprite.collide_rect(player1,enemy1):
+        running=False
     
-
-
-
+    
 
     
 pg.quit()
+
