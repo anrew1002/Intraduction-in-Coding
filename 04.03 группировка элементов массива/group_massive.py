@@ -5,10 +5,8 @@ def detour(i,j,oX,oY):
   reference=a[i][j]
   #print("ref",reference)
   a[i][j]=0
-  
   if reference!=0:
     #print("Нуль позиция",reference,i,j)
-    
     if j+1<=oX and reference==a[i][j+1]:
         #print("whRight",reference,a[i][j+1])
         #print("вправо",a[i][j+1])
@@ -35,48 +33,45 @@ def detour(i,j,oX,oY):
         #print("end")
         a[i][j]=reference
     setA.add((reference,i,j))
-
   return setA
-
-def printMatrix(mas):
-  for line in mas:
+def printMatrix(mas,text=""):
+  print(text)
+  for line in mas:   
     print(line)
   print()
-    
-    
-    
-    
-  
-    
 
+def FileReaderMatrix(name):
+  f=open(name,"r").readlines()
+  a=[]
+  for line in f:
+    line=list(map(int,line.split(" ")))
+    a.append(line)
+  return a
+    
 print("hello!")
-
 
 a=[[1,1,3,2,0],
    [1,3,3,2,3],
    [1,6,3,2,3],
    [0,6,3,3,3]]
 
+a=FileReaderMatrix("input.txt")
 oX=len(a[1])-1
 oY=len(a)-1
 #print("lens",oY,oX)
-
-
 b=copy.deepcopy(a)
 printMatrix(a)
 outputDetour=[]
-
 for i in range(oY+1):
     for j in range(oX+1):
       output=detour(i,j,oX,oY)
       if output!=set():
         outputDetour.append(output)
       #print("answer",output_detour)
-printMatrix(a)
+#printMatrix(a)
 #for i in b:
     #print(i)
 #print(outputDetour)
-
 answer1=[[0]*(oX+1) for _ in range(oY+1)]
 answer2=[[0]*(oX+1) for _ in range(oY+1)]
 answer3=[[0]*(oX+1) for _ in range(oY+1)]
@@ -108,9 +103,16 @@ for elem in outputDetour:
         answer8[coordinates[1]][coordinates[2]]=coordinates[0]
       if coordinates[0]==9:
         answer9[coordinates[1]][coordinates[2]]=coordinates[0]
-printMatrix(answer1)
-printMatrix(answer3)
-printMatrix(answer6)
+printMatrix(answer1,"Группы 1")
+printMatrix(answer2,"Группы 2")
+printMatrix(answer3,"Группы 3")
+printMatrix(answer4,"Группы 4")
+printMatrix(answer5,"Группы 5")
+printMatrix(answer6,"Группы 6")
+printMatrix(answer7,"Группы 7")
+printMatrix(answer8,"Группы 8")
+printMatrix(answer9,"Группы 9")
+
  
       
 
