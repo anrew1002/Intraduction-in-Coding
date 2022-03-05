@@ -27,24 +27,35 @@ def detour(i,j,oX,oY):
         setA.update(detour(i,j-1,oX,oY))
         setA.add((a[i][j-1],i,j-1))
         a[i][j-1]=0
+    if i-1>=0 and a[i-1][j]==reference:
+        setA.update(detour(i-1,j,oX,oY))
+        setA.add((a[i-1][j],i-1,j))
+        a[i-1][j]=0
     if len(setA)==0:
         #print("end")
         a[i][j]=reference
     setA.add((reference,i,j))
-    
-    
-    
-    
+
   return setA
+
+def printMatrix(mas):
+  for line in mas:
+    print(line)
+  print()
+    
+    
+    
+    
+  
     
 
 print("hello!")
 
 
 a=[[1,1,3,2,0],
-   [1,3,3,3,3],
-   [1,6,3,7,1],
-   [0,6,3,1,1]]
+   [1,3,3,2,3],
+   [1,6,3,2,3],
+   [0,6,3,3,3]]
 
 oX=len(a[1])-1
 oY=len(a)-1
@@ -52,20 +63,16 @@ oY=len(a)-1
 
 
 b=copy.deepcopy(a)
-for i in a:
-  print(i)
-#print(a[0+1][0+1])
-print("")
+printMatrix(a)
 outputDetour=[]
+
 for i in range(oY+1):
     for j in range(oX+1):
       output=detour(i,j,oX,oY)
       if output!=set():
         outputDetour.append(output)
       #print("answer",output_detour)
-for i in a:
-    print(i)
-print("")
+printMatrix(a)
 #for i in b:
     #print(i)
 #print(outputDetour)
@@ -101,14 +108,9 @@ for elem in outputDetour:
         answer8[coordinates[1]][coordinates[2]]=coordinates[0]
       if coordinates[0]==9:
         answer9[coordinates[1]][coordinates[2]]=coordinates[0]
-for i in answer1:
-  print(i)
-print()
-for i in answer3:
-  print(i)
-print()
-for i in answer6:
-  print(i)
+printMatrix(answer1)
+printMatrix(answer3)
+printMatrix(answer6)
  
       
 
