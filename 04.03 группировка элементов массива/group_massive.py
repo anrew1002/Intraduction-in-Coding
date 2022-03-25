@@ -55,19 +55,23 @@ a=[[1,1,3,2,0],
    [1,6,3,2,3],
    [0,6,3,3,3]]
 
-a=FileReaderMatrix("input.txt")
+a=FileReaderMatrix("input1.txt")
 oX=len(a[1])-1
 oY=len(a)-1
 #print("lens",oY,oX)
 b=copy.deepcopy(a)
 printMatrix(a)
 outputDetour=[]
+counter=0
 for i in range(oY+1):
     for j in range(oX+1):
       output=detour(i,j,oX,oY)
+      print(output)
+      
       if output!=set():
+        counter+=1
         outputDetour.append(output)
-      #print("answer",output_detour)
+      #print("answer",outputDetour)
 #printMatrix(a)
 #for i in b:
     #print(i)
@@ -85,6 +89,7 @@ answer9=[[0]*(oX+1) for _ in range(oY+1)]
 for elem in outputDetour:
   for coordinates in elem:
     if coordinates[0]!=0:
+      
       if coordinates[0]==1:
         answer1[coordinates[1]][coordinates[2]]=coordinates[0]
       if coordinates[0]==2:
@@ -112,6 +117,8 @@ printMatrix(answer6,"Группы 6")
 printMatrix(answer7,"Группы 7")
 printMatrix(answer8,"Группы 8")
 printMatrix(answer9,"Группы 9")
+print(counter)
+
 
  
       
