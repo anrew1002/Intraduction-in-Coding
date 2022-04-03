@@ -1,4 +1,5 @@
 import copy
+import graphviz
 class graph_Matrix():
     def __init__(self,list1):
         self.matrix=[]
@@ -28,13 +29,32 @@ class graph_Matrix():
     
     def output_Matrix(self,list1):
         output="  "
-        output+=", ".join(self.naming) +"\n"
+        output+=", ".join(self.naming) +" \n"
         for i in range(len(list1)):
-            output+= str(self.naming[i])+" "+str(list1[i])[1:-1] + "\n"
+            output+= str(self.naming[i])+" "+str(list1[i])[1:-1] + " \n"
         return output
     def edit_Matrix(self, param, i,j):
         self.matrix[i][j]=param
         self.set_path()
+    def get_path(self, start,finish):
+        counter=0
+        for i in range(len(self.naming)):
+            if start==self.naming[i]:
+                lineStart=i
+                counter+=1
+                continue
+            elif finish == self.naming[i]:
+                columnFinish=i
+                counter+=1
+                continue
+        if counter!=2:
+            print("Ошибка")
+            return
+        output=self.path[lineStart][columnFinish]
+        if output==0:
+            output=min(filter(lambda x: (x!=0),self.path[columnFinish]))
+        return output
+    
 #основан на алгоритме Флойда + парочка функций для интереса
 def FileReaderMatrix(name):
   a=[]
