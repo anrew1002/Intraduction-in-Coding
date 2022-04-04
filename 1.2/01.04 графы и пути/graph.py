@@ -7,14 +7,14 @@ class graph_Matrix():
         for i in range(1,len(list1)):
             self.matrix.append(list(map(int,a[i][1:])))
             
-        self.set_path()
+        self.setPath()
         
     def __str__(self):
-        return self.output_Matrix(self.matrix)
+        return self.outputMatrix(self.matrix)
     def __repr__(self):
-        return self.output_Matrix(self.matrix)
-    
-    def set_path(self):
+        return self.outputMatrix(self.matrix)
+   
+    def setPath(self):
         self.path=[]
         self.root=[[""]*len(self.matrix[0]) for n in range(len(self.matrix[0]))]
         self.path=copy.deepcopy(self.matrix)
@@ -27,18 +27,18 @@ class graph_Matrix():
                             self.path[i][j] = self.path[i][counter]+self.path[counter][j]
                             self.root[i][j]+=self.naming[counter]
             counter+=1
-        return self.output_Matrix(self.path)
+        return self.outputMatrix(self.path)
     
-    def output_Matrix(self,list1):
+    def outputMatrix(self,list1):
         output="  "
         output+=", ".join(self.naming) +" \n"
         for i in range(len(list1)):
             output+= str(self.naming[i])+" "+str(list1[i])[1:-1] + " \n"
         return output
-    def edit_Matrix(self, param, i,j):
+    def editMatrix(self, param, i,j):
         self.matrix[i][j]=param
-        self.set_path()
-    def get_path(self, start,finish):
+        self.setPath()
+    def getPath(self, start,finish):
         counter=0
         for i in range(len(self.naming)):
             if start==self.naming[i]:
@@ -53,8 +53,8 @@ class graph_Matrix():
             print("Ошибка")
             return
         output=str(self.path[lineStart][columnFinish])
-        if output==0:
-            output=str(min(filter(lambda x: (x!=0),self.path[columnFinish])))
+        if output=="0":
+            output=str(min(filter(lambda x: (x!=0),self.path[columnFinish]))) + " reverse path"
         output+=" "+start
         if self.root[lineStart][columnFinish]!= "":
             output +=str(self.root[lineStart][columnFinish])
@@ -79,8 +79,8 @@ print("\n")
 graph=graph_Matrix(a)
 #graph.edit_Matrix(3,1,0)
 print(graph)
-print(graph.set_path())
-print(graph.get_path(input("введите точку начала: "),input("введите точку конца: ")))
+print(graph.setPath())
+print(graph.getPath(input("введите точку начала: "),input("введите точку конца: ")))
 
 
 
