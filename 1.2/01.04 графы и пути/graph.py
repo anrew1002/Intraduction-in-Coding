@@ -16,6 +16,7 @@ class graph_Matrix():
     
     def set_path(self):
         self.path=[]
+        self.root=[[""]*len(self.matrix[0]) for n in range(len(self.matrix[0]))]
         self.path=copy.deepcopy(self.matrix)
         counter=0
         while counter < len(self.path):
@@ -24,6 +25,7 @@ class graph_Matrix():
                     if (self.path[i][counter]!=0) and (self.path[counter][j]!=0):
                         if self.path[i][j] > self.path[i][counter]+self.path[counter][j] or self.path[i][j]==0 :
                             self.path[i][j] = self.path[i][counter]+self.path[counter][j]
+                            self.root[i][j]+=self.naming[counter]
             counter+=1
         return self.output_Matrix(self.path)
     
@@ -50,9 +52,13 @@ class graph_Matrix():
         if counter!=2:
             print("Ошибка")
             return
-        output=self.path[lineStart][columnFinish]
+        output=str(self.path[lineStart][columnFinish])
         if output==0:
-            output=min(filter(lambda x: (x!=0),self.path[columnFinish]))
+            output=str(min(filter(lambda x: (x!=0),self.path[columnFinish])))
+        output+=" "+start
+        if self.root[lineStart][columnFinish]!= "":
+            output +=str(self.root[lineStart][columnFinish])
+        output+=finish
         return output
     
 #основан на алгоритме Флойда + парочка функций для интереса
@@ -74,7 +80,7 @@ graph=graph_Matrix(a)
 #graph.edit_Matrix(3,1,0)
 print(graph)
 print(graph.set_path())
-
+print(graph.get_path(input("введите точку начала: "),input("введите точку конца: ")))
 
 
 
