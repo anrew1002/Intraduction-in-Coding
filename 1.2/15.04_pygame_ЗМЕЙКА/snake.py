@@ -4,7 +4,12 @@ import math
 import pygame
 import time
 
+pygame.mixer.pre_init(frequency=44100, size=8, channels=2,
+                      buffer=512, devicename=None)
 pygame.init()
+pygame.mixer.music.load("YoshidaBrothersNabbed.mp3")
+s_hrum = pygame.mixer.Sound('hrum1.wav')
+s_bum = pygame.mixer.Sound('bum.wav')
 
 
 class snake():
@@ -85,7 +90,7 @@ class fruit():
 
 def game_over_window(score, game_window):
     global window_x, window_y
-
+    pygame.mixer.music.stop()
     my_font = pygame.font.SysFont('times new roman', 50)
     game_over_surface = my_font.render(
         'Your Score is : ' + str(score), True, (255, 0, 0))
@@ -93,7 +98,6 @@ def game_over_window(score, game_window):
     game_over_rect.midtop = (window_x/2, window_y/4)
     game_window.blit(game_over_surface, game_over_rect)
     pygame.display.flip()
-    time.sleep(2)
     menu_main()
 
 
@@ -103,7 +107,8 @@ def main(event, root):
     root.destroy()
     game_window = pygame.display.set_mode((window_x, window_y))
     is_game_over = False
-
+    pygame.mixer.music.play(loops=0, start=0.0,
+                            fade_ms=0)
     fps = pygame.time.Clock()
     s = snake([100, 50])
     f = fruit(game_window)
@@ -112,15 +117,19 @@ def main(event, root):
         s.move(game_window)
         f.draw()
         if s.head[0] == f.pos[0] and s.head[1] == f.pos[1]:
+            s_hrum.play()
             score += 10
             f.redraw()
         else:
             s.crawl()
 
         if s.head[0] < 0 or s.head[0] > window_x-10:
+            s_bum.play()
             game_over_window(score, game_window)
         if s.head[1] < 0 or s.head[1] > window_y-10:
+            s_bum.play()
             game_over_window(score, game_window)
+
         pygame.display.update()
         fps.tick(s.speed)
 
@@ -132,7 +141,7 @@ def random_pos():
 
 def menu_main():
     root = Tk()
-    bg = PhotoImage(file="15.04_pygame_ЗМЕЙКА/bck.png")
+    bg = PhotoImage(file="bck.png")
     but_play = Button(text='Play')
     but_play.bind("<Button-1>", lambda e, fun=root: main(e, fun))
     but_play.pack()
