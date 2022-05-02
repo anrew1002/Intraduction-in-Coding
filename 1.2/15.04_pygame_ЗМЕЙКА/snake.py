@@ -1,3 +1,4 @@
+from email.mime import image
 from tkinter import *
 import random
 import math
@@ -12,7 +13,7 @@ s_hrum = pygame.mixer.Sound('hrum1.wav')
 s_bum = pygame.mixer.Sound('bum.wav')
 
 
-class snake():
+class Snake():
 
     def __init__(self, pos_start):
         self.head = pos_start
@@ -72,7 +73,7 @@ class snake():
         self.body.pop()
 
 
-class fruit():
+class Fruit():
     def __init__(self,  game_window, is_spawn=True):
         self.window = game_window
         self.spawn = is_spawn
@@ -110,8 +111,8 @@ def main(event, root):
     pygame.mixer.music.play(loops=0, start=0.0,
                             fade_ms=0)
     fps = pygame.time.Clock()
-    s = snake([100, 50])
-    f = fruit(game_window)
+    s = Snake([100, 50])
+    f = Fruit(game_window)
 
     while not is_game_over:
         s.move(game_window)
@@ -141,10 +142,20 @@ def random_pos():
 
 def menu_main():
     root = Tk()
+    w = root.winfo_screenwidth()
+    h = root.winfo_screenheight()
+    w = (w//2)-200
+    h = (h//2)-200
+    root.geometry("400x400+{}+{}".format(w, h))
     bg = PhotoImage(file="bck.png")
-    but_play = Button(text='Play')
+    canvas1 = Canvas(root, width=400, height=400)
+    canvas1.pack(fill="both", expand=True)
+    canvas1.create_image(0, 0, image=bg, anchor="nw")
+
+    but_play = Button(text='Play', width=15, height=3)
     but_play.bind("<Button-1>", lambda e, fun=root: main(e, fun))
-    but_play.pack()
+    button_play_canv = canvas1.create_window(
+        140, 30, anchor="nw", window=but_play)
     root.mainloop()
 
 
@@ -153,6 +164,3 @@ window_y = 480
 score = 0
 
 menu_main()
-
-
-main()
