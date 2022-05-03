@@ -147,16 +147,55 @@ def menu_main():
     w = (w//2)-200
     h = (h//2)-200
     root.geometry("400x400+{}+{}".format(w, h))
+    root.resizable(False, False)
     bg = PhotoImage(file="bck.png")
     canvas1 = Canvas(root, width=400, height=400)
     canvas1.pack(fill="both", expand=True)
     canvas1.create_image(0, 0, image=bg, anchor="nw")
 
     but_play = Button(text='Play', width=15, height=3)
+    but_proper = Button(text="Properties", width=15, height=3)
     but_play.bind("<Button-1>", lambda e, fun=root: main(e, fun))
+    but_proper.bind("<Button-1>", lambda e, fw=w,
+                    fh=h, bgg=bg: menu_proper(e, fw, fh, bgg))
     button_play_canv = canvas1.create_window(
         140, 30, anchor="nw", window=but_play)
+    but_proper_canv = canvas1.create_window(
+        140, 100, anchor="nw", window=but_proper)
     root.mainloop()
+
+
+def menu_proper(event, w, h, bg):
+    def change_window_size(event, new_x, new_y):
+        global window_x, window_y
+        window_x = new_x
+        window_y = new_y
+
+    proper = Toplevel()
+    proper.geometry("400x400+{}+{}".format(w, h))
+    canvas2 = Canvas(proper, width=400, height=400)
+    canvas2.pack(fill="both", expand=True)
+    canvas2.create_image(0, 0, image=bg, anchor="nw")
+
+    but_1080x1080 = Button(proper, text="1080x1080", height=2, width=9)
+    but_1080x1080.bind("<Button-1>", lambda e, x=1080,
+                       y=1080: change_window_size(e, x, y))
+    button_1080x1080_canv = canvas2.create_window(
+        140, 100, anchor="nw", window=but_1080x1080)
+
+    but_800x800 = Button(proper, text="800x800", height=2, width=9)
+    but_800x800.bind("<Button-1>", lambda e, x=800,
+                     y=800: change_window_size(e, x, y))
+    button_800x800_canv = canvas2.create_window(
+        140, 150, anchor="nw", window=but_800x800)
+
+    but_720x480 = Button(proper, text="720x480", height=2, width=9)
+    but_720x480.bind("<Button-1>", lambda e, x=720,
+                     y=480: change_window_size(e, x, y))
+    button_720x480_canv = canvas2.create_window(
+        140, 200, anchor="nw", window=but_720x480)
+
+    proper.mainloop()
 
 
 window_x = 720
