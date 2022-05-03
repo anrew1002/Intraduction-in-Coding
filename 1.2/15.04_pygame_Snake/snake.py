@@ -2,6 +2,7 @@ from email.mime import image
 from tkinter import *
 import random
 import math
+from turtle import color
 import pygame
 import time
 
@@ -30,7 +31,7 @@ class Snake():
         global window_x, window_y, score
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
@@ -155,13 +156,19 @@ def menu_main():
 
     but_play = Button(text='Play', width=15, height=3)
     but_proper = Button(text="Properties", width=15, height=3)
+    but_rules = Button(text="Rules", width=15, height=3)
     but_play.bind("<Button-1>", lambda e, fun=root: main(e, fun))
     but_proper.bind("<Button-1>", lambda e, fw=w,
                     fh=h, bgg=bg: menu_proper(e, fw, fh, bgg))
+    but_rules.bind("<Button-1>", lambda e, fh=h, fw=w,
+                   bgg=bg: menu_rules(e, fw, fh, bgg))
     button_play_canv = canvas1.create_window(
         140, 30, anchor="nw", window=but_play)
     but_proper_canv = canvas1.create_window(
         140, 100, anchor="nw", window=but_proper)
+    but_rules_canv = canvas1.create_window(
+        140, 170, anchor="nw", window=but_rules)
+
     root.mainloop()
 
 
@@ -195,7 +202,21 @@ def menu_proper(event, w, h, bg):
     button_720x480_canv = canvas2.create_window(
         140, 200, anchor="nw", window=but_720x480)
 
+    but_escp = Button(proper, text="Back", height=1, width=5)
+    but_escp.bind("<Button-1>", lambda e, pr=proper: pr.destroy())
+    but_ecp_canv = canvas2.create_window(10, 10, anchor="nw", window=but_escp)
     proper.mainloop()
+
+
+def menu_rules(event, w, h, bg):
+    ruler = Toplevel()
+    ruler.geometry("400x400+{}+{}".format(w, h))
+    canvas3 = Canvas(ruler, width=400, height=400)
+    canvas3.pack(fill="both", expand=True)
+    canvas3.create_image(0, 0, image=bg, anchor="nw")
+
+    canvas3.create_text(
+        70, 60, anchor="nw", text="Используйте клавиши WASD,\nдля того чтобы съесть яблочки,\nи подрасти.\nНи во что не врезайтесь!", font=("Helvetica", 14, "bold"), fill="white")
 
 
 window_x = 720
