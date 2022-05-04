@@ -79,7 +79,7 @@ class Snake():
 
 
 class EnemySnake():
-    def __init__(self, pos_start, cell_size, speed):
+    def __init__(self, pos_start, cell_size, speed, is_enabled):
         self.size = cell_size
         self.head = pos_start
         pos_start = copy.deepcopy(pos_start)
@@ -91,20 +91,38 @@ class EnemySnake():
         self.speed = speed
         self.direction = "LEFT"
         self.change_dir = self.direction
+        self.on = is_enabled
 
     def move(self, fruit_pos, game_window):
-        self.change_dir = random_direction(self.head, fruit_pos)
-        print("1", self.change_dir)
-        self.head = pos_add(direction_check(
-            self.change_dir, self.direction), self.head, self.size)
+        if not self.on:
+            return
+        while self.head in self.body:
+            self.change_dir = random_direction(self.head, fruit_pos)
+            if self.change_dir == 'UP' and self.direction != 'DOWN':
+                self.direction = 'UP'
+            if self.change_dir == 'DOWN' and self.direction != 'UP':
+                self.direction = 'DOWN'
+            if self.change_dir == 'LEFT' and self.direction != 'RIGHT':
+                self.direction = 'LEFT'
+            if self.change_dir == 'RIGHT' and self.direction != 'LEFT':
+                self.direction = 'RIGHT'
 
+            if self.direction == 'UP':
+                self.head[1] -= self.size
+            if self.direction == 'DOWN':
+                self.head[1] += self.size
+            if self.direction == 'LEFT':
+                self.head[0] -= self.size
+            if self.direction == 'RIGHT':
+                self.head[0] += self.size
         self.body.insert(0, list(self.head))
-
         for pos in self.body:
             pygame.draw.rect(game_window, (255, 255, 0),
                              pygame.Rect(pos[0], pos[1], self.size, self.size))
 
     def crawl(self):
+        if not self.on:
+            return
         self.body.pop()
 
 
@@ -168,7 +186,7 @@ def main(event, root):
     fps = pygame.time.Clock()
     s = Snake([100, 50], cell_size, 15)
     f = Fruit(game_window, cell_size)
-    enemy1 = EnemySnake([200, 300], cell_size, 14)
+    enemy1 = EnemySnake([200, 300], cell_size, 14, enemy_enabled)
     block = barricade(game_window, cell_size, [[50, 55], [50, 60], [50, 65]])
 
     while not is_game_over:
@@ -233,10 +251,8 @@ def direction_check(change, dir):
     if change == 'DOWN' and dir != 'UP':
         dir = 'DOWN'
     if change == 'LEFT' and dir != 'RIGHT':
-        print("LEFT")
         dir = 'LEFT'
     if change == 'RIGHT' and dir != 'LEFT':
-        print("RIGHT")
         dir = 'RIGHT'
 
     output = [0, 0, 0, 0]
@@ -248,7 +264,7 @@ def direction_check(change, dir):
         output[2] = 1
     if dir == "RIGHT":
         output[3] = 1
-    return output
+    return list(output)
 
 
 def pos_add(coef, head, size):
@@ -257,7 +273,7 @@ def pos_add(coef, head, size):
     head[1] += size*coef[1]
     head[0] -= size*coef[2]
     head[0] += size*coef[3]
-    return head
+    return list(head)
 
 
 def random_pos(size):
@@ -274,6 +290,7 @@ def on_closing():
 
 
 def menu_main():
+    pygame.init()
     root = Tk()
     root.protocol("WM_DELETE_WINDOW", on_closing)
     w = root.winfo_screenwidth()
@@ -311,6 +328,10 @@ def menu_proper(event, w, h, bg):
         window_x = new_x
         window_y = new_y
 
+    def change_enemy_prop(event, arg):
+        global enemy_enabled
+        enemy_enabled = arg
+
     proper = Toplevel()
     proper.geometry("400x400+{}+{}".format(w, h))
     canvas2 = Canvas(proper, width=400, height=400)
@@ -338,6 +359,14 @@ def menu_proper(event, w, h, bg):
     but_escp = Button(proper, text="Back", height=1, width=5)
     but_escp.bind("<Button-1>", lambda e, pr=proper: pr.destroy())
     but_ecp_canv = canvas2.create_window(10, 10, anchor="nw", window=but_escp)
+
+    but_en_on = Button(proper, text="ON", height=2, width=8)
+    but_en_on.bind("<Button-1>", lambda e, arg=True: change_enemy_prop(e, arg))
+    but_en_on = canvas2.create_window(60, 70, anchor="nw", window=but_en_on)
+    but_en_off = Button(proper, text="OFF", height=2, width=8)
+    but_en_off.bind("<Button-1>", lambda e,
+                    arg=False: change_enemy_prop(e, arg))
+    but_en_off = canvas2.create_window(60, 120, anchor="nw", window=but_en_off)
     proper.mainloop()
 
 
@@ -360,5 +389,6 @@ window_x = 720
 window_y = 480
 score = 0
 cell_size = 5
+enemy_enabled = True
 
 menu_main()
