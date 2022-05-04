@@ -1,3 +1,4 @@
+import collections
 from email.mime import image
 from tkinter import *
 import random
@@ -93,10 +94,10 @@ class EnemySnake():
         self.change_dir = self.direction
         self.on = is_enabled
 
-    def move(self, fruit_pos, game_window):
+    def move(self, fruit_pos, game_window, player_pos):
         if not self.on:
             return
-        while self.head in self.body:
+        while self.head in (self.body+player_pos):
             self.change_dir = random_direction(self.head, fruit_pos)
             if self.change_dir == 'UP' and self.direction != 'DOWN':
                 self.direction = 'UP'
@@ -124,6 +125,26 @@ class EnemySnake():
         if not self.on:
             return
         self.body.pop()
+
+    def reset(self, colission):
+        global window_x, window_y
+        self.head = list(random_pos(self.size))
+        pos_start = list(self.head)
+        self.body = [pos_start,
+                     [pos_start[0]+(self.size*1), pos_start[1]],
+                     [pos_start[0]+(self.size*2), pos_start[1]],
+                     [pos_start[0]+(self.size*3), pos_start[1]]
+                     ]
+        while self.body in colission:
+            self.head = list(random_pos(self.size))
+            pos_start = list(self.head)
+            self.body = [pos_start,
+                         [pos_start[0]+(self.size*1), pos_start[1]],
+                         [pos_start[0]+(self.size*2), pos_start[1]],
+                         [pos_start[0]+(self.size*3), pos_start[1]]
+                         ]
+        self.direction = "LEFT"
+        self.change_dir = self.direction
 
 
 class Fruit():
@@ -191,9 +212,9 @@ def main(event, root):
 
     while not is_game_over:
         game_window.fill((0, 0, 0))
-        enemy1.move(f.pos, game_window)
-        s.move(game_window)
 
+        s.move(game_window)
+        enemy1.move(f.pos, game_window, s.body)
         block.draw()
         f.draw()
         if s.head[0] == f.pos[0] and s.head[1] == f.pos[1]:
@@ -206,6 +227,8 @@ def main(event, root):
             f.redraw(s.body+enemy1.body+block.locations_of)
         else:
             enemy1.crawl()
+        if enemy1.head in s.body:
+            enemy1.reset(s.body)
         if s.head[0] < 0 or s.head[0] > window_x-cell_size:
             sound_bum.play()
             game_over_window(score, game_window)
