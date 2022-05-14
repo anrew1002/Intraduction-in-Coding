@@ -31,10 +31,9 @@ class graph_Matrix():
                         if self.path[i][j] > self.path[i][counter]+self.path[counter][j]:
                             self.path[i][j] = self.path[i][counter] + \
                                 self.path[counter][j]
-                            self.root[i][j] = self.naming[counter]
-                            # if i == 7 and j == 4:
-                            # print(self.outputMatrix(self.root))
-                            # print(self.path[i][j])
+                            self.root[i][j] = self.root[i][counter]+ self.naming[counter]
+                            print(self.outputMatrix(self.root))
+                            print(self.path[i][j])
             counter += 1
         return self.outputMatrix(self.path)
 
