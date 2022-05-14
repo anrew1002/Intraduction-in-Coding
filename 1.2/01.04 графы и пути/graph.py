@@ -32,8 +32,6 @@ class graph_Matrix():
                             self.path[i][j] = self.path[i][counter] + \
                                 self.path[counter][j]
                             self.root[i][j] = self.root[i][counter]+ self.naming[counter]
-                            print(self.outputMatrix(self.root))
-                            print(self.path[i][j])
             counter += 1
         return self.outputMatrix(self.path)
 
