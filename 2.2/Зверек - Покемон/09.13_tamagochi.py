@@ -34,6 +34,7 @@ class tamagochi:
     def eat(self, count):
         if self.__state != State.Dead:
             self.__state += count
+            self.__st = dt.now()
         if self.__state > State.Cheerful:
             self.__state = State.Cheerful
 
