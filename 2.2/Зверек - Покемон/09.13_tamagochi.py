@@ -18,7 +18,7 @@ class Satisfaction:
     Euphoria = 2
 
 
-class tamagochi:
+class Tamagochi:
 
     def __init__(self, name="Anon", eat_timeout=5):
         self.__flag = True
@@ -95,7 +95,7 @@ while running:
     # проверка ввода пользователя
     # #создание экзэмпляра зверька
     if len(a.split()) == 2 and a.split()[0] == "create":
-        bestiary.update({a.split()[1]: tamagochi(a.split()[1])})
+        bestiary.update({a.split()[1]: Tamagochi(a.split()[1])})
         print("Шикарно! Вы всегда можете проверить ваш бестиарий с помошью команды ls")
         print("для того чтобы поиграть со зверьком команду play и имя зверя")
         print("Аналогично работает и с feed, + в конце указывается число еды")
