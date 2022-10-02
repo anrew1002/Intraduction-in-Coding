@@ -1,68 +1,75 @@
-from re import S
 import pygame as pg
-# import tkinter as tk
-# from tkinter.ttk import *
 from pygame.locals import (QUIT)
-import random
 import math
 
 
 class Planet():
-    def __init__(self, radius, color, speed, colocation):
+    def __init__(self, name, radius, color, speed, colocation):
         global origin
-        self.radius = radius
-        self.color = color
-        self.speed = speed
-        self.origin = origin
-        self.colocation = colocation
-        self.cordinates = (origin[0], origin[1]-colocation)
-        self.angle = 0
+        self.__name = name
+        self.__radius = radius // 1594.5
+        self.__color = color
+        self.__speed = 1/speed * scale_radius
+        self.__origin = origin
+        self.__colocation = colocation * scale_a_e
+        self.__cordinates = (origin[0], origin[1]-colocation)
+        self.__angle = 0
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def radius(self):
+        return self.__radius * 1594.5
+
+    @property
+    def angle(self):
+        '''Угол в градусах'''
+        return self.__angle * 57.2958
+
+    def set_colacation(self, value):
+        self.__colocation = value
+
+    def get_colacation(self):
+        return self.__colocation
+    colocation = property(get_colacation, set_colacation)
 
     def draw_yourself(self, sc):
-        pg.draw.circle(sc, self.color, self.cordinates, self.radius)
+        pg.draw.circle(sc, self.__color, self.__cordinates, self.__radius)
 
     def align(self, sc, t):
-        self.angle = t*self.speed
-        x = self.colocation*math.cos(self.angle)
-        y = self.colocation*math.sin(self.angle)
-        self.cordinates = (self.origin[0]+x, self.origin[1]+y)
+        self.__angle = t*self.__speed
+        x = self.__colocation*math.cos(self.__angle)
+        y = self.__colocation*math.sin(self.__angle)
+        self.__cordinates = (self.__origin[0]+x, self.__origin[1]+y)
         self.draw_yourself(sc)
 
 
+scale_a_e = float(input("введите масштаб расстояний (рекомендую число 0.2): "))
+scale_radius = float(input("введите масштаб планет (рекомендую число 0.2): "))
+
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
-origin = (500, 500)
+origin = [500, 500]
 FPS = 60
 
-# радиус, цвет, скорость, дальность от солнца
-earth_r = 4
-ea_speed = 0.5
-a_e = 4
+dict_planet = []
 
-sun = Planet(5, (255, 20, 20), 10, 0)
-mercury = Planet(
-    round(earth_r*0.38240827845719661335841956726246), (200, 20, 20), 1/0.241095*ea_speed, round(58/a_e))
-venus = Planet(round(earth_r*0.94873000940733772342427093132643),
-               (200, 20, 20), 1/0.6136986*ea_speed, round(108.9/a_e))
-earth = Planet(earth_r, (20, 20, 255), ea_speed, round(149.6/a_e))
-mars = Planet(earth_r*0.53135779241141423643775478206334,
-              (20, 20, 80), 0.53137283*ea_speed, round(228/a_e))
-jupiter = Planet(earth_r*11.209156475384132957039824396362,
-                 (20, 80, 255), 1/11.89*ea_speed, round(741*0.7/a_e))
-saturn = Planet(earth_r*9.4543744120413922859830667920978,
-                (80, 20, 205), 1/29.46*ea_speed, round(1430*0.7/a_e))
-uranus = Planet(earth_r*3.9761680777673251803073063656319,
-                (20, 90, 90), 1/84*ea_speed, round((2800-1500)/a_e))
-neptune = Planet(earth_r*3.8604578237692066478519912198181,
-                 (20, 100, 255), 1/164.79*ea_speed, round((4500-2700)/a_e))
-
+with open("input.txt", "r", encoding="UTF-8") as f:
+    f.readline()
+    f = f.readlines()
+    for line in f:
+        line = line.strip().split()
+        dict_planet.append(
+            Planet(line[0], float(line[1]), tuple(map(int, line[4][1:-1].split(","))), float(line[2]), float(line[3]), ))
 
 pg.init()
 screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pg.display.set_caption("Solar System")
 clock = pg.time.Clock()
-
-print(sun.color, mercury.radius)
+# dict_planet[8].colocation = dict_planet[8].colocation
+# print(dict_planet[0].colocation)
 
 running = True
 t = 0
@@ -71,19 +78,24 @@ while running:
     clock.tick(FPS)
     for event in pg.event.get():
         if event.type == QUIT:
-            # print(event.type)
             running = False
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_UP:
+                if origin[1] < 1000:
+                    origin[1] += 100
+            if event.key == pg.K_DOWN:
+                if origin[1] > 0:
+                    origin[1] -= 100
+            if event.key == pg.K_LEFT:
+                if origin[0] < 1000:
+                    origin[0] += 100
+            if event.key == pg.K_RIGHT:
+                if origin[0] > 0:
+                    origin[0] -= 100
+            # print(dict_planet[6].name, dict_planet[6].angle)
     screen.fill((185, 177, 219))
-    sun.draw_yourself(screen)
-    mercury.align(screen, t)
-    venus.align(screen, t)
-    earth.align(screen, t)
-    mars.align(screen, t)
-    jupiter.align(screen, t)
-    saturn.align(screen, t)
-    uranus.align(screen, t)
-    neptune.align(screen, t)
+    for planet in dict_planet:
+        planet.align(screen, t)
     pg.display.update()
-
 
 pg.quit()
