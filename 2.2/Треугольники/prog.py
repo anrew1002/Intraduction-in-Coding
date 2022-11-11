@@ -85,16 +85,16 @@ with open('plist.txt', 'r') as f:
     # print(f)
 list_of_triangles = []
 
-# for cordinates1 in f:
-#     for cordinates2 in f:
-#         for cordinates3 in f:
-#             if cordinates1 != cordinates2 and cordinates1 != cordinates3 and cordinates3 != cordinates2:
-#                 if not _line_equation(cordinates1, cordinates2, cordinates3):
-#                     list_of_triangles.append(
-#                         Triangle((cordinates1, cordinates2, cordinates3)))
+for cordinates1 in f:
+    for cordinates2 in f:
+        for cordinates3 in f:
+            if cordinates1 != cordinates2 and cordinates1 != cordinates3 and cordinates3 != cordinates2:
+                if not _line_equation(cordinates1, cordinates2, cordinates3):
+                    list_of_triangles.append(
+                        Triangle((cordinates1, cordinates2, cordinates3)))
 
-# print(max(list_of_triangles))
-# print(min(list_of_triangles))
+print(max(list_of_triangles))
+print(min(list_of_triangles))
 
 
 for cordinates1 in f:
@@ -120,3 +120,14 @@ for i in range(len(f)):
         angle = 360-angle
     angles_f.append(angle)
 sorted_f = [x for _, x in sorted(zip(angles_f, f), key=lambda pair: pair[0])]
+print(sorted_f)
+f = open("наборы.txt", 'w')
+for i, cordinates1 in enumerate(sorted_f):
+    for j, cordinates2 in enumerate(sorted_f[i+1:], i+1):
+        for k, cordinates3 in enumerate(sorted_f[j+i+1:], j+i+1):
+            for z, cordinates4 in enumerate(sorted_f[k+j+i:], k+i+j):
+                if i == 0:
+                    pass
+                    f.write(' '.join(map(str, [cordinates1, cordinates2,
+                            cordinates3, cordinates4]))+'\n')
+f.close()
