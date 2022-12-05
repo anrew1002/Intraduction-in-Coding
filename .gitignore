@@ -1,1 +1,3 @@
 book.xlsx
+__pycache__
+*.log

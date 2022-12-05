@@ -1,3 +1,4 @@
+import itertools
 from vectors import *
 import logging
 logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG)
@@ -67,16 +68,26 @@ class Fourangle(Figure):
         return area
 
 
+def ccw(A, B, C):
+    return (C[1]-A[1])*(B[0]-A[0]) > (B[1]-A[1])*(C[0]-A[0])
+
+
+def intersect(A, B, C, D):
+    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
+
+
 def matrix_copy(matrix: list) -> list:
     return [elem[:] for elem in matrix]
 
 
 def _line_equation(c1, c2, c3):
+    if (c1[0] == c2[0] and c1[0] == c3[0]) or (c1[1] == c2[1] and c1[1] == c3[1]):
+        return True
     try:
         y = (c3[1]-c1[1])/(c2[1]-c1[1])
         x = (c3[0]-c1[0])/(c2[0]-c1[0])
     except ZeroDivisionError:
-        return True
+        return False
     if y == x:
         return True
     return False
@@ -92,87 +103,45 @@ def _line_equation_four(points: list):
     return False
 
 
-def avarage_point(point, center, r_big, r_small):
-    exp = (point[0]-center)**2+(point[1]-center)**2
-    if exp < r_big**2 and exp > r_small**2:
-        return False
-    return True
-
-
 with open('plist.txt', 'r') as f:
     f = f.readline().strip()
     f = f.split("]")[:-2]
     f = list(map(lambda a: a[1:], f))
-    # print(f)
-    f = list(map(lambda a: tuple(map(int, a.split(','))), f))
-    # print(f)
-# list_of_triangles = []
+    f = list(set(map(lambda a: tuple(map(int, a.split(','))), f)))
 
-# for cordinates1 in f:
-#     for cordinates2 in f:
-#         for cordinates3 in f:
-#             if cordinates1 != cordinates2 and cordinates1 != cordinates3 and cordinates3 != cordinates2:
-#                 if not _line_equation(cordinates1, cordinates2, cordinates3):
-#                     list_of_triangles.append(
-#                         Triangle((cordinates1, cordinates2, cordinates3)))
 
-# print(max(list_of_triangles))
-# print(min(list_of_triangles))
-# (12, 13), (21, 40), (38, 36), (37, 12)
-# print(avarage_point((12, 13), 25, 15, 5))
-# print(avarage_point((21, 40), 25, 15, 5))
-# print(avarage_point((38, 36), 25, 15, 5))
-# print(avarage_point((37, 12), 25, 15, 5))
-# print(all([(lambda x: not avarage_point(x, 25, 15, 5))(x)
-#       for x in [(12, 13), (21, 40), (38, 36), (37, 12)]]))
+list_of_triangles = []
+for cordinates1 in f:
+    for cordinates2 in f:
+        for cordinates3 in f:
+            if cordinates1 != cordinates2 and cordinates1 != cordinates3 and cordinates3 != cordinates2:
+                if not _line_equation(cordinates1, cordinates2, cordinates3):
+                    list_of_triangles.append(
+                        Triangle((cordinates1, cordinates2, cordinates3)))
+
+print(max(list_of_triangles))
+print(min(list_of_triangles))
+
+
 counter = 0
 list_of_fourangles = []
-f = [(25, 25), (12, 13), (26, 36), (38, 36),
-     (27, 26), (20, 30), (37, 12), (21, 40)]
-print(_line_equation((38, 9), (31, 41), (34, 25)))
-print(_line_equation_four(((38, 9), (31, 41), (34, 25), (29, 49))))
-for i, cordinates1 in enumerate(f):
-    for j, cordinates2 in enumerate(f[i+1:], i+1):
-        for k, cordinates3 in enumerate(f[j+i+1:], j+i+1):
-            for z, cordinates4 in enumerate(f[k+j+i:], k+i+j):
-                logging.debug(
-                    f"{cordinates1}, {cordinates2}, {cordinates3}, {cordinates4}")
-                if all([cordinates1 not in [cordinates2, cordinates3, cordinates4], cordinates2 not in [cordinates3, cordinates4], [cordinates3 not in [cordinates4]]]):
-                    if not _line_equation_four([cordinates1, cordinates2, cordinates3, cordinates4]):
-                        # if all([(lambda x: avarage_point(x, 25, 20, 5))(x) for x in [cordinates1, cordinates2, cordinates3, cordinates4]]):
-                        counter += 1
-
-                        list_of_fourangles.append(
-                            Fourangle([cordinates1, cordinates2, cordinates3, cordinates4]))
-        logging.debug(f"{counter}")
+print(f)
+for item in itertools.combinations(f, 4):
+    cordinates1 = item[0]
+    cordinates2 = item[1]
+    cordinates3 = item[2]
+    cordinates4 = item[3]
+    # if (5, 0) in item and (50, 8) in item and (50, 46) in item:
+    #     logging.debug(
+    #         f"1   {cordinates1},{cordinates2},{cordinates3},{cordinates4}")
+    if intersect(cordinates1, cordinates4, cordinates3, cordinates2):
+        cordinates4, cordinates3 = cordinates3, cordinates4
+    if intersect(cordinates1, cordinates2, cordinates3, cordinates4):
+        cordinates2, cordinates3 = cordinates3, cordinates2
+    if not _line_equation_four([cordinates1, cordinates2, cordinates3, cordinates4]):
+        counter += 1
+        list_of_fourangles.append(
+            Fourangle([cordinates1, cordinates2, cordinates3, cordinates4]))
 
 print(max(list_of_fourangles))
 print(min(list_of_fourangles))
-# print(dot_product([-3, -3], [-1, -3]))
-# print(vector_lenght([-3, -3]), vector_lenght([-1, -3]))
-# print(cos_of_vectors([3, 4], [4, 3]))
-# print(angle_of_vectors([-3, -3], [3, 4]))
-# print(angle_of_vectors([-3, -3], [-3, -1]))
-# print(cos_of_vectors([-3, -3], [3, 3]))
-# print(cos_of_vectors([-3, -3], [-3, -1]))
-
-# angles_f = []
-# center = 25
-# for i in range(len(f)):
-#     point = [f[i][0]-center, f[i][1]-center]
-#     angle = angle_of_vectors([-center, -center], point)
-#     if angle_of_vectors([-25, 25], f[i]) > 90:
-#         angle = 360-angle
-#     angles_f.append(angle)
-# sorted_f = [x for _, x in sorted(zip(angles_f, f), key=lambda pair: pair[0])]
-# print(sorted_f)
-# f = open("наборы.txt", 'w')
-# for i, cordinates1 in enumerate(sorted_f):
-#     for j, cordinates2 in enumerate(sorted_f[i+1:], i+1):
-#         for k, cordinates3 in enumerate(sorted_f[j+i+1:], j+i+1):
-#             for z, cordinates4 in enumerate(sorted_f[k+j+i:], k+i+j):
-#                 if i == 0:
-#                     pass
-#                     f.write(' '.join(map(str, [cordinates1, cordinates2,
-#                             cordinates3, cordinates4]))+'\n')
-# f.close()
