@@ -127,24 +127,27 @@ with open('plist.txt', 'r') as f:
 #       for x in [(12, 13), (21, 40), (38, 36), (37, 12)]]))
 counter = 0
 list_of_fourangles = []
-# f = [(25, 25), (12, 13), (26, 36), (38, 36),
-#      (27, 26), (20, 30), (37, 12), (21, 40)]
-for cordinates1 in f:
-    for cordinates2 in f:
-        for cordinates3 in f:
-            for cordinates4 in f:
+f = [(25, 25), (12, 13), (26, 36), (38, 36),
+     (27, 26), (20, 30), (37, 12), (21, 40)]
+print(_line_equation((38, 9), (31, 41), (34, 25)))
+print(_line_equation_four(((38, 9), (31, 41), (34, 25), (29, 49))))
+for i, cordinates1 in enumerate(f):
+    for j, cordinates2 in enumerate(f[i+1:], i+1):
+        for k, cordinates3 in enumerate(f[j+i+1:], j+i+1):
+            for z, cordinates4 in enumerate(f[k+j+i:], k+i+j):
+                logging.debug(
+                    f"{cordinates1}, {cordinates2}, {cordinates3}, {cordinates4}")
                 if all([cordinates1 not in [cordinates2, cordinates3, cordinates4], cordinates2 not in [cordinates3, cordinates4], [cordinates3 not in [cordinates4]]]):
                     if not _line_equation_four([cordinates1, cordinates2, cordinates3, cordinates4]):
-                        if all([(lambda x: avarage_point(x, 25, 20, 5))(x) for x in [cordinates1, cordinates2, cordinates3, cordinates4]]):
-                            counter += 1
-                            # logging.debug(
-                            #     f"{cordinates1}, {cordinates2}, {cordinates3}, {cordinates4}")
+                        # if all([(lambda x: avarage_point(x, 25, 20, 5))(x) for x in [cordinates1, cordinates2, cordinates3, cordinates4]]):
+                        counter += 1
 
-                            list_of_fourangles.append(
-                                Fourangle([cordinates1, cordinates2, cordinates3, cordinates4]))
+                        list_of_fourangles.append(
+                            Fourangle([cordinates1, cordinates2, cordinates3, cordinates4]))
         logging.debug(f"{counter}")
 
 print(max(list_of_fourangles))
+print(min(list_of_fourangles))
 # print(dot_product([-3, -3], [-1, -3]))
 # print(vector_lenght([-3, -3]), vector_lenght([-1, -3]))
 # print(cos_of_vectors([3, 4], [4, 3]))
