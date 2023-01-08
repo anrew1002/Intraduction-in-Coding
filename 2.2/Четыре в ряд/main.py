@@ -46,11 +46,22 @@ class Game():
                                     self.current_player = 2
                                 case 2:
                                     self.current_player = 1
+                        else:
+                            self._check_full(
+                                self.battleground.matrix_of_battleground)
 
             self.window.fill('black')
             self.battleground.update(self.current_col)
             self.clock.tick(self.FPS)
             pygame.display.update()
+
+    def _check_full(self, matrix):
+
+        for col in matrix:
+            for row in col:
+                if row == 0:
+                    return
+        self._draw()
 
     def check_victory(self, i, j):
         matrix = deepcopy(self.battleground.matrix_of_battleground)
@@ -59,6 +70,9 @@ class Game():
         for dir in ["UD", "LR", "D2", "D1"]:
             count = self.__detour(matrix, dir, i, j)
             if count >= 3:
+                print(dir)
+                for line in self.battleground.matrix_of_battleground:
+                    print(line)
                 self.victory()
 
     def __detour(self, matrix, dir, i, j):
@@ -150,10 +164,34 @@ class Game():
                         esc = True
                         self.current_player = 2
                         self.battleground.restart()
+            self.battleground.update(self.current_col)
+            self.window.blit(self.battleground.surface, (0, 0))
             self.display.blit(victory.image, victory.rect)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
-        print("VICTORY")
+
+    def _draw(self):
+        draw = pygame.sprite.Sprite()
+        draw.image = pygame.image.load('ничья.png').convert_alpha()
+        draw.rect = draw.image.get_rect(
+            center=self.display.get_rect().center)
+        esc = False
+        while not esc:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        esc = True
+                        self.current_player = 2
+                        self.battleground.restart()
+            self.window.fill((0, 0, 0))
+            self.battleground.update(self.current_col)
+            self.window.blit(self.battleground.surface, (0, 0))
+            self.display.blit(draw.image, draw.rect)
+            self.window.blit(self.display, (0, 0))
+            pygame.display.update()
 
 
 class Battleground():
